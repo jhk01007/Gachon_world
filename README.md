@@ -15,8 +15,10 @@ The game operates by randomly generating notes in one of t he 5 lanes at an incr
 JavaScript's EventListener is used to read playaer input, and determining game conditions.
 JavaScript's play method was also used to play sound elements when notes are hit or missed.
 
-출처: https://github.com/jrkuhn/KeyboardHero/tree/master
+참고: https://github.com/jrkuhn/KeyboardHero/tree/master
+가천대 교가 리듬게임
 
+플레이 방법
 1. index.html 오픈
 2. play버튼 클릭
 3. 게임 시작(왼쪽부터 F, G, H, J, K)
