@@ -1,31 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
- <div id="menu">
-	 <input type="button" id="play" onClick="keyhero.init()" value="Play">
+    <div id="menu">
+        <input type="button" id="play" onClick="keyhero.init()" value="Play">
     </div>
     <meta charset="UTF-8">
     <title>Keyborad Hero</title>
     <style>
-        body { margin: 0;
-		background-color: #dee0e5;}
-        canvas { width: 100%; height: 100% }
+        body {
+            margin: 0;
+            background-color: #dee0e5;
+        }
 
-		#score{background-color: #dee0e5}
+        canvas {
+            width: 100%;
+            height: 100%
+        }
 
-		#text{font-size: 50px}
+        #score {
+            background-color: #dee0e5
+        }
 
-        .Score{
+        #text {
+            font-size: 30px
+        }
+
+        .Score {
             font-family: 'Orbitron', sans-serif;
             font-size: 24px;
             color: #FF7373;
             position: absolute;
             text-align: center;
-            left: 400px;    
+            left: 400px;
             top: 500px;
         }
 
-        input[type="button"]{
+        #combo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 100px;
+            color: #f90101;
+            position: absolute;
+            text-align: center;
+            left: 1200px;
+            top: 100px;
+        }
+
+        input[type="button"] {
 
             border: none;
             outline: none;
@@ -44,41 +65,84 @@
             display: inline-block;
             cursor: pointer;
         }
+
         input[type="button"]:active {
             -webkit-transform: translate(0px, 5px);
             transform: translate(0px, 5px);
             box-shadow: 0px 1px 0px 0px;
         }
+
+        .vertical-menu {
+            width: 400px;
+            height: 200px;
+            overflow-y: auto;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 50px;
+        }
+
+        .vertical-menu a {
+            background-color: #eee;
+            color: black;
+            display: block;
+            padding: 12px;
+            text-decoration: none;
+        }
+
+        .vertical-menu a:hover {
+            background-color: #ccc;
+        }
+
+        .vertical-menu a.active {
+            background-color: #04AA6D;
+            color: white;
+        }
     </style>
 </head>
+
 <body>
 
 
-    <div style="text-align: center;"  id="score">
+    <div style="text-align: center;" id="score">
         <span id="points">Score: 0 </span>
     </div>
 
-	<div style="text-align: center;" id="text">
-       Welcome to KeyHero! <br>
-	   Instructions: <br>
-	   1.) Press Play <br>
-	   2.) Use keys: F, G, H, J, K<br>
-	   3.) F maps to the left most column, G maps to the second left most column, and so on <br>
-	   4.) As the notes come down the screen, press the corresponding key when the note hits the bottom <br>
-	   5.) You have 5 lives shown on the left side, everytime you miss a note you lose a life<br>
+    <div style="text-align: center;" id="combo">
+        <span id="comboPoints"> X </span>
+    </div>
+
+    <div style="text-align: center;" id="text">
+        Welcome to KeyHero! <br>
+        Instructions: <br>
+        1.) Press Play <br>
+        2.) Use keys: F, G, H, J, K<br>
+        3.) F maps to the left most column, G maps to the second left most column, and so on <br>
+        4.) As the notes come down the screen, press the corresponding key when the note hits the bottom <br>
+        5.) You have 5 lives shown on the left side, everytime you miss a note you lose a life<br>
+    </div>
+
+
+
+    <div class="vertical-menu">
+        <a href="./index.html" class="active">Home</a>
+        <a onclick="getMenuItemValue(this)" >gachon</a>
+        <a onclick="getMenuItemValue(this)" >song</a>
+        <a onclick="getMenuItemValue(this)" >B</a>
     </div>
 
     <script src="build/three.min.js"></script>
     <script src="build/gachon_hero.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    
-    <audio id="gachon"> <source src="build/gachon.mp3"> </audio>
+
+    <audio id="audio">
+        <source id="audioSource" src="build/gachon.mp3">
+    </audio>
 
     <script>
-	$("#score").hide();
-
-
+        $("#score").hide();
+        $("#combo").hide();
     </script>
 
 </body>
+
 </html>
