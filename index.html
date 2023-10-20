@@ -97,6 +97,9 @@
             background-color: #04AA6D;
             color: white;
         }
+        .vertical-menu a.clicked {
+            background-color: #ccc; /* Change the background color when clicked */
+        }
     </style>
 </head>
 
@@ -138,6 +141,28 @@
         <source id="audioSource" src="build/gachon.mp3">
     </audio>
 
+
+    <script>
+        // JavaScript to handle the click event
+        const menuItems = document.querySelectorAll(".vertical-menu a");
+        menuItems.forEach(item => {
+            item.addEventListener("click", function() {
+                // Remove "active" class from all items
+                menuItems.forEach(item => item.classList.remove("active"));
+                // Add "active" class to the clicked item
+                this.classList.add("active");
+                // Add "clicked" class to the clicked item (to change the color temporarily)
+                this.classList.add("clicked");
+                // Remove the "clicked" class after a short delay (e.g., 500ms)
+                setTimeout(() => {
+                    this.classList.remove("clicked");
+                }, 500);
+            });
+        });
+
+        // Rest of your JavaScript code
+    </script>
+    
     <script>
         $("#score").hide();
         $("#combo").hide();
