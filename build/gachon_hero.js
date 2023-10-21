@@ -112,35 +112,55 @@ keyhero.boardInit = function () {
 
 function updateComboText() {
     const comboText = combo.toString();
+    const plusScore = '+' + (20 + combo * 5).toString();
     const loader = new THREE.FontLoader();
     loader.load('https://cdn.rawgit.com/mrdoob/three.js/r128/examples/fonts/helvetiker_regular.typeface.json', function (font) {
-        const textGeometry = new THREE.TextGeometry(comboText, {
+        const comboGeometry = new THREE.TextGeometry(comboText, {
             font: font,
             size: 1,
             height: 0.2,
             curveSegments: 12,
         });
 
-        const textMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-        const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+        const plusGeometry = new THREE.TextGeometry(plusScore, {
+            font: font,
+            size: 0.5,
+            height: 0.1,
+            curveSegments: 12,
+        });
+
+        const comboMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        const comboMesh = new THREE.Mesh(comboGeometry, comboMaterial);
+
+        const plusMaterial = new THREE.MeshBasicMaterial({ color: 0xffa500 });
+        const plusMesh = new THREE.Mesh(plusGeometry, plusMaterial);
 
         // Remove the old combo text (if any)
-        const existingText = keyhero.scene.getObjectByName('comboText');
-        if (existingText) {
-            keyhero.scene.remove(existingText);
+        const existingCombo = keyhero.scene.getObjectByName('comboText');
+        if (existingCombo) {
+            keyhero.scene.remove(existingCombo);
+        }
+        // Remove the old combo text (if any)
+        const existingPlus = keyhero.scene.getObjectByName('plusScore');
+        if (existingPlus) {
+            keyhero.scene.remove(existingPlus);
         }
 
-        textMesh.name = 'comboText'; // Set a unique name for the textMesh
-        keyhero.scene.add(textMesh);
+        comboMesh.position.set(0, 2, 0);  // x, y, z 좌표를 조절
+        plusMesh.position.set(0, 1, 0);  // x, y, z 좌표를 조절
+        comboMesh.name = 'comboText'; // Set a unique name for the textMesh
+        plusMesh.name = 'plusScore'
+        keyhero.scene.add(comboMesh); 
+        if(combo != 0) // 콤보가 0일때는 점수 추가 표시가 뜨지 않게
+            keyhero.scene.add(plusMesh);
     });
 }
 
 
 keyhero.addScore = function (pts) {
-    points += pts;
-    keyhero.updateScore();
-
     combo++;
+    points += pts + combo * 5
+    keyhero.updateScore();
     updateComboText();
 
     keyhero.renderer.render(keyhero.scene, keyhero.camera);
