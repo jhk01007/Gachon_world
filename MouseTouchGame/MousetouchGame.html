@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Infinity Mouse Touch Game</title>
+    <style>
+        body {
+            background-color: black; 
+            color: aliceblue;
+            height: 100vh;
+            margin: 0;
+            display: flex; 
+            flex-direction: column; /* Add this line to stack the children vertically */
+            align-items:center; /* Center the children horizontally */
+        }
+
+        #startScreen, #game {
+            width: 100vw;
+            height: 30vh;
+            border-radius :5px ;
+            text-align: center;
+            font-size: 350%;
+        }
+        
+        #startButton {
+             padding :50px ;  
+             background-color:#ff6347 ;  
+             color:white ;  
+             border:none ;   
+             border-radius :20px ;
+             font-size: 150%;
+        }
+        
+        #restartButton {
+            margin-top: 100px;
+             padding :30px ;  
+             background-color:#ff6347 ;  
+             color:white ;  
+             border:none ;   
+             border-radius :20px ;
+             font-size: 150%;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="startScreen">
+    <h1>Infinity Mouse Touch Game!</h1>
+    <button id="startButton">Game Start</button>
+</div>
+
+<div id="game" style="display: none;">
+    Timer: <span id="timer">50</span><br>
+    Score: <span id="counter">0</span><br>
+    Top Score:<span id="topScore">0</span><br/>
+
+</div>
+
+<div id="gameOver" style="display: none;">
+    <br><button id="restartButton">Restart</button>
+</div>
+
+<div id="webglContainer">
+    <div id="gameOverlay"></div>
+</div>  
+
+<script src="https://threejs.org/build/three.js"></script>
+<script src="background.js"></script>
+<script src='MousetouchGame.js'></script>
+
+</body>
+</html> 
