@@ -18,6 +18,9 @@ let prevTime = performance.now();
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 
+// gltf loader
+const loader = new GLTFLoader();
+
 // texture 
 const textureLoader = new THREE.TextureLoader();
 
@@ -166,10 +169,11 @@ function init() {
     const floor = createRedBrickFloor(-40, i * -40);
     scene.add(floor);
   }
-  for (let i = 0; i < 2; i++) {
-    const floor = createRedBrickFloor(-120 + i * 40, -160);
+  for (let i = 0; i < 10; i++) {
+    const floor = createRedBrickFloor(-40 - i * 40, -160);
     scene.add(floor);
   }
+  
   // 회색 벽돌 - 가천관 쪽 바닥
   for (let i = 0; i < 7; i++) {
     for (let j = 0; j < 4; j++) {
@@ -178,13 +182,18 @@ function init() {
     }
   }
   // 흙 바닥 - 예대쪽 바닥
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 9; j++) {
-      if (i == 4 && j >= 4)
+      // 가천관 왼쪽 회색 콘크리트
+      if(i >= 8 && j >=5)
         continue;
-      else if (i == 3 && j == 4)
+
+      // 빨간 벽돌길
+      if(i == 9 && j <= 4)
         continue;
-      const floor = createDirtFloor(-240 + i * 40, j * -40);
+      else if(j == 4)
+        continue;
+      const floor = createDirtFloor(-400 + i * 40, j * -40);
       scene.add(floor);
     }
   }
@@ -211,9 +220,6 @@ function init() {
 
 
   // 가천관 로드하기
-
-  const loader = new GLTFLoader();
-
   loader.load(
     '../building/gachongwan.gltf',
     function (gltf) {
@@ -221,6 +227,27 @@ function init() {
       model.position.set(40, 1, -280);
       model.scale.set(8, 8, 8);
       model.rotation.y = (Math.PI / 2) * 3;
+      scene.add(gltf.scene);
+
+    },
+    // called while loading is progressing
+    function (xhr) {
+      console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    },
+    // called when loading has errors
+    function (error) {
+      console.log('An error happened');
+    }
+  );
+
+  // 예대 2 건물
+  loader.load(
+    '../building/art2/scene.gltf',
+    function (gltf) {
+      const model = gltf.scene;
+      model.position.set(-320, 1, -160);
+      model.scale.set(100, 100, 100);
+      model.rotation.y = Math.PI;
       scene.add(gltf.scene);
 
     },
