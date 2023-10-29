@@ -173,7 +173,7 @@ function init() {
     const floor = createRedBrickFloor(-40 - i * 40, -160);
     scene.add(floor);
   }
-  
+
   // 회색 벽돌 - 가천관 쪽 바닥
   for (let i = 0; i < 7; i++) {
     for (let j = 0; j < 4; j++) {
@@ -218,7 +218,7 @@ function init() {
   }
   //
 
-
+//건물 로드하기
   // 가천관 로드하기
   loader.load(
     '../building/gachongwan.gltf',
@@ -239,6 +239,29 @@ function init() {
       console.log('An error happened');
     }
   );
+
+  // 무한대 로드하기
+  loader.load(
+    '../building/muhandae.gltf',
+    function (gltf) {
+      const model = gltf.scene;
+      model.position.set(80, 4.5, -72);
+      model.scale.set(3, 3, 3);
+      model.rotation.y = (Math.PI / 2) * 3;
+      scene.add(gltf.scene);
+
+    },
+    // called while loading is progressing
+    function (xhr) {
+      console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    },
+    // called when loading has errors
+    function (error) {
+      console.log('An error happened');
+    }
+  );
+// 
+
 
   // 예대 2 건물
   loader.load(
