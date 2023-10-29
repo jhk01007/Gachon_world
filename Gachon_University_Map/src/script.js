@@ -52,6 +52,41 @@ const stone1 = textureLoader.load('../texture/rock/StoneFloor_baseColor.jpg');
 const stone2 = textureLoader.load('../texture/rock/RockStreet_baseColor.jpg');
 
 
+class Snowflake {
+  constructor() {
+    this.mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.5, 8, 8),
+      new THREE.MeshBasicMaterial({ color: 0xFFFFFF })
+    );
+    this.mesh.position.set(
+      (Math.random() - 0.5) * 1000,
+      Math.random() * 500 + 500,
+      (Math.random() - 0.5) * 1000
+    );
+    this.speed = Math.random() * 0.5 + 0.5;
+  }
+
+  update() {
+    this.mesh.position.y -= this.speed;
+    if (this.mesh.position.y < 0) {
+      this.mesh.position.y = Math.random() * 500 + 500;
+    }
+  }
+}
+
+// 눈송이 인스턴스들을 저장할 배열
+let snowflakes = [];
+
+// 눈송이들을 생성하고 장면에 추가
+function createSnowflakes() {
+  for (let i = 0; i < 5000; i++) {
+    let snowflake = new Snowflake();
+    snowflakes.push(snowflake);
+    scene.add(snowflake.mesh);
+  }
+}
+
+
 init();
 animate();
 
@@ -283,6 +318,8 @@ function init() {
       console.log('An error happened');
     }
   );
+
+  //createSnowflakes(); 이 부분을 활성화 하면 눈이 내립니다
   // 랜더링
   renderer = new THREE.WebGLRenderer({ antialias: true, depth: true });
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -346,6 +383,10 @@ function animate() {
   }
 
   prevTime = time;
+
+  snowflakes.forEach(snowflake => {
+    snowflake.update();
+  });
 
   renderer.render(scene, camera);
 }
