@@ -29,6 +29,11 @@ const dirt_textureRoughnessColor = textureLoader.load('../texture/ground_dirt/Gr
 const stone1 = textureLoader.load('../texture/rock/StoneFloor_baseColor.jpg');
 const stone2 = textureLoader.load('../texture/rock/RockStreet_baseColor.jpg');
 
+//구름
+export const smoke = textureLoader.load('../texture/wheather/smoke.png');
+
+
+
 
 export function createGrassFloor(posX, posZ) {
     let floorGeometry = new THREE.PlaneGeometry(40, 40, 100, 100);

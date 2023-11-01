@@ -2,8 +2,11 @@ import * as THREE from "three";
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { getWeather } from "./weather.js";
-import {createGrassFloor, createRedBrickFloor, createGrayBrickFloor, createDirtFloor, createTree} from "./create.js";
+import { createGrassFloor, createRedBrickFloor, createGrayBrickFloor, createDirtFloor, createTree, smoke } from "./create.js";
+
 let camera, scene, renderer, controls;
+let cloudParticles = [], flash, rain, rainGeo, rainCount = 30000, cloudGeo, cloudMaterial, rainFlag = 0;
+
 
 const objects = [];
 
@@ -54,6 +57,67 @@ function createSnowflakes() {
     snowflakes.push(snowflake);
     scene.add(snowflake.mesh);
   }
+}
+
+
+function createRainDrop() {
+
+  rainFlag = 1;
+  scene.background = new THREE.Color(0xffffff);
+  const directionalLight = new THREE.DirectionalLight(0xffeedd);
+  directionalLight.position.set(0, 0, 1);
+  scene.add(directionalLight);
+
+  flash = new THREE.PointLight(0x062d89, 30, 500, 1.7);
+  flash.position.set(40, 700, -280);
+  scene.add(flash);
+
+
+  rainGeo = new THREE.BufferGeometry();
+  const positions = new Float32Array(rainCount * 3);
+
+  for (let i = 0; i < rainCount; i++) {
+    positions[i * 3] = Math.random() * 400 - 200;
+    positions[i * 3 + 1] = Math.random() * 500 - 250;
+    positions[i * 3 + 2] = Math.random() * 400 - 200;
+  }
+
+  rainGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+
+  let rainMaterial = new THREE.PointsMaterial({
+    color: 0xaaaaaa,
+    size: 0.1,
+    opacity: 0.2,
+    transparent: true
+  });
+  rain = new THREE.Points(rainGeo, rainMaterial);
+  scene.add(rain);
+
+
+  scene.fog = new THREE.FogExp2(0x11111f, 0.002);
+
+  cloudGeo = new THREE.PlaneGeometry(2000, 2000, 1, 1);
+  cloudMaterial = new THREE.MeshLambertMaterial({
+    map: smoke,
+    transparent: true
+  });
+
+  for (let p = 0; p < 10; p++) {
+    let cloud = new THREE.Mesh(cloudGeo, cloudMaterial);
+    cloud.position.set(
+      Math.random() * 800 - 400,
+      500,
+      Math.random() * 500 - 450
+    );
+    cloud.rotation.x = 1.16;
+    cloud.rotation.y = -0.12;
+    cloud.rotation.z = Math.random() * 360;
+    cloud.material.opacity = 0.2;
+    cloudParticles.push(cloud);
+    scene.add(cloud);
+  }
+
+
 }
 
 init();
@@ -189,13 +253,13 @@ function init() {
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 9; j++) {
       // 가천관 왼쪽 회색 콘크리트
-      if(i >= 8 && j >=5)
+      if (i >= 8 && j >= 5)
         continue;
 
       // 빨간 벽돌길
-      if(i == 9 && j <= 4)
+      if (i == 9 && j <= 4)
         continue;
-      else if(j == 4)
+      else if (j == 4)
         continue;
       const floor = createDirtFloor(-400 + i * 40, j * -40);
       scene.add(floor);
@@ -222,7 +286,7 @@ function init() {
   }
   //
 
-//건물 로드하기
+  //건물 로드하기
   // 가천관 로드하기
   loader.load(
     '../building/gachongwan.gltf',
@@ -264,7 +328,7 @@ function init() {
       console.log('An error happened');
     }
   );
-// 
+  // 
 
 
   // 예대 2 건물
@@ -290,26 +354,26 @@ function init() {
 
 
   //날씨 불러오기
-  setTimeout( async () => {
+  setTimeout(async () => {
     var weatherId = await getWeather();
     // weatherId = 600;
     console.log(weatherId);
-    if(weatherId >= 200 && weatherId <= 531){
+    if (weatherId >= 200 && weatherId <= 531) {
       console.log("Rain");
-      // 비올 때 이벤트를 넣어주세요
-    } else if(weatherId >= 600 && weatherId <= 622){
+      createRainDrop();
+    } else if (weatherId >= 600 && weatherId <= 622) {
       console.log("Snow");
       createSnowflakes();
-    } else if(weatherId === 800){
+    } else if (weatherId === 800) {
       console.log("Clear");
-    } else if(weatherId >= 701 && weatherId <= 804){
+    } else if (weatherId >= 701 && weatherId <= 804) {
       console.log("Clouds");
       //흐릴 때 이벤트 넣어주세요
     } else {
       console.log("Not Defined");
     }
   }, 10);
-  
+
   // 랜더링
   renderer = new THREE.WebGLRenderer({ antialias: true, depth: true });
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -329,6 +393,43 @@ function onWindowResize() {
 
 function animate() {
   requestAnimationFrame(animate);
+
+
+  if (rainFlag == 1) {
+    const positions = rainGeo.attributes.position.array;
+    for (let i = 0; i < rainCount; i++) {
+      const p = {
+        x: positions[i * 3],
+        y: positions[i * 3 + 1],
+        z: positions[i * 3 + 2],
+        velocity: 0,
+      };
+      p.velocity -= Math.random() * 4;
+      p.y += p.velocity;
+      if (p.y < -200) {
+        p.y = 200;
+        p.velocity = 0;
+      }
+      positions[i * 3] = p.x;
+      positions[i * 3 + 1] = p.y;
+      positions[i * 3 + 2] = p.z;
+    }
+
+    rainGeo.attributes.position.needsUpdate = true;
+    rain.rotation.y += 0.002;
+
+
+    if (Math.random() > 0.8 || flash.power > 100) {
+      if (flash.power < 100)
+        flash.position.set(
+          40,
+          700,
+          -280
+        );
+      flash.power = 100 + Math.random() * 500;
+    }
+  }
+
 
   const time = performance.now();
 
