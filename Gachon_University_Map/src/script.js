@@ -297,12 +297,12 @@ function init() {
     if(weatherId >= 200 && weatherId <= 531){
       console.log("Rain");
       // 비올 때 이벤트를 넣어주세요
-    } else if(weatherId <= 600 && weatherId <= 622){
+    } else if(weatherId >= 600 && weatherId <= 622){
       console.log("Snow");
       createSnowflakes();
     } else if(weatherId === 800){
       console.log("Clear");
-    } else if(weatherId <= 701 && weatherId <= 804){
+    } else if(weatherId >= 701 && weatherId <= 804){
       console.log("Clouds");
       //흐릴 때 이벤트 넣어주세요
     } else {
