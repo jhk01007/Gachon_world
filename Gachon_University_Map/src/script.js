@@ -50,15 +50,75 @@ class Snowflake {
 // 눈송이 인스턴스들을 저장할 배열
 let snowflakes = [];
 
-// 눈송이들을 생성하고 장면에 추가
-function createSnowflakes() {
+function createSnow() {
+   
+  scene.background = new THREE.Color(0xffffff);
+
+  const directionalLight = new THREE.DirectionalLight(0xffeedd);
+  directionalLight.position.set(0, 0, 1);
+  scene.add(directionalLight);
+
+  cloudGeo = new THREE.PlaneGeometry(2000, 2000, 1, 1);
+  cloudMaterial = new THREE.MeshLambertMaterial({
+    map: smoke,
+    transparent: true
+  });
+
+  for (let p = 0; p < 10; p++) {
+    let cloud = new THREE.Mesh(cloudGeo, cloudMaterial);
+    cloud.position.set(
+      Math.random() * 800 - 400,
+      500,
+      Math.random() * 500 - 450
+    );
+    cloud.rotation.x = 1.16;
+    cloud.rotation.y = -0.12;
+    cloud.rotation.z = Math.random() * 360;
+    cloud.material.opacity = 0.2;
+    cloudParticles.push(cloud);
+    scene.add(cloud);
+  }
+  //기존 눈송이 생성 코드
   for (let i = 0; i < 5000; i++) {
     let snowflake = new Snowflake();
     snowflakes.push(snowflake);
     scene.add(snowflake.mesh);
   }
+
 }
 
+function createClouds() {
+  
+  scene.background = new THREE.Color(0xffffff);
+
+  const directionalLight = new THREE.DirectionalLight(0xffeedd);
+  directionalLight.position.set(0, 0, 1);
+  scene.add(directionalLight);
+
+  scene.fog = new THREE.FogExp2(0x11111f, 0.002);
+
+  // 구름 생성 부분
+  cloudGeo = new THREE.PlaneGeometry(2000, 2000, 1, 1);
+  cloudMaterial = new THREE.MeshLambertMaterial({
+    map: smoke,
+    transparent: true
+  });
+
+  for (let p = 0; p < 10; p++) {
+    let cloud = new THREE.Mesh(cloudGeo, cloudMaterial);
+    cloud.position.set(
+      Math.random() * 800 - 400,
+      500,
+      Math.random() * 500 - 450
+    );
+    cloud.rotation.x = 1.16;
+    cloud.rotation.y = -0.12;
+    cloud.rotation.z = Math.random() * 360;
+    cloud.material.opacity = 0.2;
+    cloudParticles.push(cloud);
+    scene.add(cloud);
+  }
+}
 
 function createRainDrop() {
 
@@ -356,19 +416,19 @@ function init() {
   //날씨 불러오기
   setTimeout(async () => {
     var weatherId = await getWeather();
-    // weatherId = 600;
+    //weatherId = 610;
     console.log(weatherId);
     if (weatherId >= 200 && weatherId <= 531) {
       console.log("Rain");
       createRainDrop();
     } else if (weatherId >= 600 && weatherId <= 622) {
       console.log("Snow");
-      createSnowflakes();
+      createSnow();
     } else if (weatherId === 800) {
       console.log("Clear");
     } else if (weatherId >= 701 && weatherId <= 804) {
       console.log("Clouds");
-      //흐릴 때 이벤트 넣어주세요
+      createClouds();
     } else {
       console.log("Not Defined");
     }
