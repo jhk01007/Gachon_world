@@ -1,6 +1,6 @@
 let count = 0;
 let topScore = localStorage.getItem("topScore") || 0;
-topScoreDisplay.textContent=topScore; 
+document.getElementById('topScore').textContent = topScore;  // Update top score at the beginning
 
 const startScreen = document.getElementById('startScreen');
 const startButton = document.getElementById('startButton');
@@ -26,10 +26,11 @@ startButton.addEventListener('click', () => {
             clearInterval(timerId);
             window.removeEventListener('click', onMouseClick); // Remove the click event listener when the game ends.
             alert(`Time's up! You clicked ${count} times.`);
-	        if(count > topScore) { 
-                topScore=count; 
+	        
+            if(count > topScore) { 
+                topScore = count;
                 localStorage.setItem("topScore", topScore);
-                topScoreDisplay.textContent=topScore;
+                document.getElementById('topScore').textContent = topScore;
             }
 	        count=0;
 	        counterDisplay.textContent=count;
