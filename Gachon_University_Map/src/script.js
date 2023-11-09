@@ -416,7 +416,7 @@ function init() {
   //날씨 불러오기
   setTimeout(async () => {
     var weatherId = await getWeather();
-    //weatherId = 610;
+    
     console.log(weatherId);
     if (weatherId >= 200 && weatherId <= 531) {
       console.log("Rain");

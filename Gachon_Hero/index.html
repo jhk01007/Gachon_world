@@ -2,9 +2,6 @@
 <html lang="en">
 
 <head>
-    <div id="menu">
-        <input type="button" id="play" onClick="keyhero.init()" value="Play">
-    </div>
     <meta charset="UTF-8">
     <title>Keyborad Hero</title>
     <style>
@@ -46,8 +43,14 @@
             top: 100px;
         }
 
-        input[type="button"] {
+        #menu {
+            text-align: center;
+            /* 가운데 정렬을 위한 스타일 추가 */
+        }
 
+        #returnToMap,
+        #play {
+            display: inline-block;
             border: none;
             outline: none;
             text-decoration: none;
@@ -55,21 +58,24 @@
             padding: 15px 20px;
             background-color: #FF7373;
             box-shadow: 2px 5px 2px 0px #CE4646;
-            margin: 0 auto;
             font-size: 24px;
             color: #F3F2F2;
-            position: absolute;
-            text-align: center;
-            bottom: 100px;
-            right: 47.5vw;
-            display: inline-block;
             cursor: pointer;
         }
 
-        input[type="button"]:active {
+        #returnToMap:active,
+        #play:active {
             -webkit-transform: translate(0px, 5px);
             transform: translate(0px, 5px);
             box-shadow: 0px 1px 0px 0px;
+        }
+
+        #menu {
+            text-align: center;
+            position: relative;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .vertical-menu {
@@ -87,6 +93,7 @@
             display: block;
             padding: 12px;
             text-decoration: none;
+            cursor: pointer;
         }
 
         .vertical-menu a:hover {
@@ -97,8 +104,10 @@
             background-color: #04AA6D;
             color: white;
         }
+
         .vertical-menu a.clicked {
-            background-color: #ccc; /* Change the background color when clicked */
+            background-color: #ccc;
+            /* Change the background color when clicked */
         }
     </style>
 </head>
@@ -111,12 +120,11 @@
     </div>
 
     <div style="text-align: center;" id="combo">
-        <span id="comboPoints"> X </span>
+        <span id="comboPoints"> </span>
     </div>
 
     <div style="text-align: center;" id="text">
-        Welcome to KeyHero! <br>
-        Instructions: <br>
+        Welcome to Gachon Hero! <br>
         1.) Press Play <br>
         2.) Use keys: F, G, H, J, K<br>
         3.) F maps to the left most column, G maps to the second left most column, and so on <br>
@@ -124,15 +132,18 @@
         5.) You have 5 lives shown on the left side, everytime you miss a note you lose a life<br>
     </div>
 
-
-
-    <div class="vertical-menu">
-        <a href="./index.html" class="active">Home</a>
-        <a onclick="getMenuItemValue(this)" >gachon</a>
-        <a onclick="getMenuItemValue(this)" >congratulation</a>
-        <a onclick="getMenuItemValue(this)" >eta</a>
+    <div class="vertical-menu" style="height: auto;">
+        <p style="font-size: 30px; text-align: center; font-weight: bold;">Select the Song</p>
+        <a onclick="getMenuItemValue(this)">gachon</a>
+        <a onclick="getMenuItemValue(this)">congratulation</a>
+        <a onclick="getMenuItemValue(this)">eta</a>
     </div>
 
+    <div id="menu">
+        <input type="button" id="returnToMap" value="Return to Map" onclick="returnToMap()" style="margin-right: 10px;">
+        <input type="button" id="play" onClick="keyhero.init()" value="Play">
+    </div>
+    
     <script src="build/three.min.js"></script>
     <script src="build/gachon_hero.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -146,7 +157,7 @@
         // JavaScript to handle the click event
         const menuItems = document.querySelectorAll(".vertical-menu a");
         menuItems.forEach(item => {
-            item.addEventListener("click", function() {
+            item.addEventListener("click", function () {
                 // Remove "active" class from all items
                 menuItems.forEach(item => item.classList.remove("active"));
                 // Add "active" class to the clicked item
@@ -162,7 +173,26 @@
 
         // Rest of your JavaScript code
     </script>
+    <script>
+        function returnToMap() {
+            var newPath = "../Gachon_University_Map/src/index" + ".html";
+            window.location.href = newPath;
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Play 버튼을 비활성화
+            document.getElementById("play").disabled = true;
     
+            // vertical-menu 아이템이 클릭될 때마다 Play 버튼 활성화
+            const menuItems = document.querySelectorAll(".vertical-menu a");
+            menuItems.forEach(item => {
+                item.addEventListener("click", function () {
+                    document.getElementById("play").disabled = false;
+                });
+            });
+        });
+    </script>
     <script>
         $("#score").hide();
         $("#combo").hide();

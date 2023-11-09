@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
- <div id="menu">
-	 <a href="./index.html"><input type="button" id="play"  value="Try Again"></a>   
-    </div>
     <meta charset="UTF-8">
     <title>Game Over</title>
     <link href='//fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
     <style>
-        body { margin: 0;
-		background-color: #dee0e5;}
-        canvas { width: 100%; height: 100% }
-
-		#score{background-color: #dee0e5}
-		
-		#text{font-size: 50px}
-		
-        .score{
-            font-family: 'Orbitron', sans-serif;
-            font-size: 24px;
-            color: #FF7373;
-            position: absolute;
-            text-align: center;
-            left: 400px;
-            top: 500px;
+        body {
+            margin: 0;
+            background-color: #dee0e5;
         }
 
-        input[type="button"]{
-		 
+        canvas {
+            width: 100%;
+            height: 100%
+        }
+
+        #score {
+            background-color: #dee0e5;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 30px;
+            color: #FF7373;
+            margin-top: 50px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #text {
+            font-size: 50px;
+            font-weight: bold;
+        }
+
+        input[type="button"] {
+
             border: none;
             outline: none;
             text-decoration: none;
@@ -35,16 +40,15 @@
             padding: 15px 20px;
             background-color: #FF7373;
             box-shadow: 2px 5px 2px 0px #CE4646;
-            margin: 0 auto;
+            margin: auto;
             font-size: 24px;
             color: #F3F2F2;
-            position: absolute;
             text-align: center;
-            top: 300px;
-            right: 47.5vw;
             display: inline-block;
             cursor: pointer;
+            margin-top: 80px;
         }
+
         input[type="button"]:active {
             -webkit-transform: translate(0px, 5px);
             transform: translate(0px, 5px);
@@ -52,28 +56,44 @@
         }
     </style>
 </head>
+
 <body>
-
-
-    <div style="text-align: center;"  id="score">
-        <span id="points">Score: 0 </span>
+    <div style="text-align: center;" id="text">
+        GAME OVER<br>
     </div>
-	
-	<div style="text-align: center;" id="text">
-      GAME OVER<br>
+    <div id="score">
+        <span id="points" style="text-align: center;">Score: 0 </span>
+        <span id="combo" style="text-align: center;"> MaxCombo: 0 </span>
     </div>
-	
+    <div id="menu" style="text-align: center;">
+        <a href="./index.html"><input type="button" id="play" value="Try Again"></a>
+    </div>
     <script src="build/three.min.js"></script>
     <script src="build/gachon_hero.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
-    <audio id="gachon"> <source src="build/gachon.mp3"> </audio>
 
     <script>
-	$("#score").hide();
+        $(document).ready(function () {
+            // URL에서 쿼리 문자열 추출
+            var queryString = window.location.search;
 
+            // URL에서 score와 combo 값 추출
+            var urlParams = new URLSearchParams(queryString);
+            var score = urlParams.get('score');
+            var combo = urlParams.get('maxCombo');
+            var success = urlParams.get('success');
 
+            document.getElementById("points").innerText = "Score: " + score;
+            document.getElementById("combo").innerText = " | MaxCombo: " + combo;
+            if(success === '1'){
+                document.getElementById("text").innerText = "You Win!";
+            }else {
+                document.getElementById("text").innerText = "Game Over";
+            }
+            $("#score").show();
+        });
     </script>
-
 </body>
+
 </html>

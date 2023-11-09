@@ -156,7 +156,6 @@ function updateComboText() {
     });
 }
 
-
 keyhero.addScore = function (pts) {
     combo++;
     points += pts + combo * 5
@@ -173,6 +172,7 @@ keyhero.updateScore = function () {
 
 keyhero.init = function () {
     $("#play").hide();
+    $("#returnToMap").hide();
     $("#text").hide();
     $(".vertical-menu").hide();
     $("#score").show();
@@ -294,12 +294,14 @@ keyhero.init = function () {
 };
 var songFlag;
 var interval;
+var maxCombo = 0;
+var success = 1;
 
 keyhero.game = function () {
 
 
     if (songFlag === 0) {
-        document.getElementById("audio").setAttribute('src', '/build/' + audioName);
+        document.getElementById("audio").setAttribute('src', 'build/' + audioName);
         document.getElementById("audio").load();
         document.getElementById("audio").play();
         songFlag = 1;
@@ -346,8 +348,9 @@ keyhero.game = function () {
                     keyhero.lives -= 1;
                     keyhero.scene.remove(keyhero.life[keyhero.lives]);
 
-
-                    combo =0;
+                    if(combo > maxCombo)
+                        maxCombo = combo;
+                    combo = 0;
                     updateComboText();
 
                     keyhero.scene.remove(note);
@@ -358,7 +361,9 @@ keyhero.game = function () {
                     move = undefined;
 
                      if (keyhero.lives == 0) {
-                         window.location.replace("gameOver.html");
+                        success = 0;
+                         var redirectURL = "gameOver.html?score=" + points + "&maxCombo=" + maxCombo + "&success=" + success;
+                         window.location.replace(redirectURL);
                     }
                 }
             };
@@ -369,7 +374,10 @@ keyhero.game = function () {
 
 
             if (keyhero.index === keyhero.interval.length) {
-                setTimeout(function () { window.location.replace("gameOver.html") }, 7000);
+                setTimeout(function () { 
+                    var redirectURL = "gameOver.html?score=" + points + "&combo=" + combo;
+                    window.location.replace(redirectURL); 
+                }, 7000);
 
                 return;
             } else {
