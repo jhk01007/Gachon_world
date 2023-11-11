@@ -500,7 +500,7 @@ function checkCollision1() {
   // 교차하는지 확인합니다.
   if (avatarBB1.intersectsBox(muhandaeBB1)) {
     // 충돌이 감지되었으므로 게임 HTML 페이지로 리다이렉션합니다.
-    window.location.href = '/Gachon_Hero/index.html'; // 실제 URL로 대체해주세요.
+    window.location.href = '/Gachon_Hero/gachonHeroLoading.html'; // 실제 URL로 대체해주세요.
   }
 }
 function checkCollision2() {
@@ -518,7 +518,7 @@ function checkCollision2() {
   // 교차하는지 확인합니다.
   if (avatarBB2.intersectsBox(muhandaeBB2)) {
     // 충돌이 감지되었으므로 게임 HTML 페이지로 리다이렉션합니다.
-    window.location.href = '/HURDLE_RUN/index.html'; // 실제 URL로 대체해주세요.
+    window.location.href = '/HURDLE_RUN/HurdleRunLoading.html'; // 실제 URL로 대체해주세요.
   }
 }
 function checkCollision3() {
@@ -647,19 +647,19 @@ function animate() {
   if (controls.isLocked === true) {if (avatar) {
     // Update avatar's position based on the current direction and speed
     if (moveForward) {
-      avatar.position.x -= 0.1;
+      avatar.position.x -= 0.4;
       avatar.rotation.y = Math.PI; // Face the avatar forward
     }
     if (moveBackward) {
-      avatar.position.x += 0.1;
+      avatar.position.x += 0.4;
       avatar.rotation.y = 0; // Face the avatar backward
     }
     if (moveLeft) {
-      avatar.position.z += 0.1;
+      avatar.position.z += 0.4;
       avatar.rotation.y = -Math.PI / 2; // Face the avatar left
     }
     if (moveRight) {
-      avatar.position.z -= 0.1;
+      avatar.position.z -= 0.4;
       avatar.rotation.y = Math.PI / 2; // Face the avatar right
     }
     checkCollision1();
