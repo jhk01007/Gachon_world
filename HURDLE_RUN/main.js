@@ -3,35 +3,49 @@ var ctx = canvas.getContext('2d');
 
 canvas.width = window.innerWidth - 100;
 canvas.height = window.innerHeight - 100;
+
+var backgrounds = ['배경1.jpg', '배경2.jpg', '배경3.jpg', '배경4.jpg', '배경5.jpg', '배경6.jpg', '배경7.jpg', '배경8.jpg', '배경9.jpg', '배경10.jpg', '배경11.jpg', '배경12.jpg', '배경13.jpg'];
+
+var backgroundIndex = Math.floor(Math.random() * backgrounds.length);
+var background = new Image();
+background.src = backgrounds[backgroundIndex];  
+
 var img1 = new Image();
-img1.src = '공룡.png';
+img1.src = '무한이1.png';
 
 var img2 = new Image();
-img2.src = '허들.jpg';
- 
+img2.src = '허들.png';
+
+var img3 = new Image();
+img3.src = '무한이2.png';
+
 var dino = {
     x: 10,
-    y: 250,
-    initialY: 250, // 초기 y 위치 저장
+    y: canvas.height - 100,
+    initialY: canvas.height - 100,
     width: 50,
     height: 50,
-    isJumping: false, // 점프 중 여부를 나타내는 플래그
+    isJumping: false,
     jump() {
-        if (!this.isJumping && this.y == this.initialY) { // 점프 중이 아니고 초기 위치에 있을 때만 점프 가능
+        if (!this.isJumping && this.y === this.initialY) {
             this.isJumping = true;
             jumpingTime = 0;
         }
     },
     draw() {
         ctx.fillStyle = 'green';
-        ctx.drawImage(img1, this.x, this.y, this.width, this.height);
-    }
-}
+        if (this.isJumping) {
+            ctx.drawImage(img3, this.x, this.y, this.width, this.height);
+        } else {
+            ctx.drawImage(img1, this.x, this.y, this.width, this.height);
+        }
+    },
+};
 
 class Cactus {
     constructor() {
         this.x = canvas.width;
-        this.y = 250;
+        this.y = canvas.height - 100;
         this.width = 50;
         this.height = 50;
     }
@@ -40,6 +54,7 @@ class Cactus {
         ctx.drawImage(img2, this.x, this.y, this.width, this.height);
     }
 }
+
 var cactus = new Cactus();
 cactus.draw();
 
@@ -69,6 +84,8 @@ function byFrame() {
     timer++;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
     if (Math.random() < 0.01 && (cactusmix.length === 0 || canvas.width - cactusmix[cactusmix.length - 1].x >= minCactusSpacing)) {
         var cactus = new Cactus();
@@ -105,15 +122,28 @@ function byFrame() {
     }
 
     if (timer >= gameTime * 1000 || !gameRunning) {
-        clearInterval(timeInterval);
-        cancelAnimationFrame(animation);
         if (gameRunning) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'red';
             ctx.font = '40px Arial';
             ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
             ctx.fillText('Score: ' + score, canvas.width / 2 - 60, canvas.height / 2 + 40);
         }
+
+
+        // 랜덤한 배경 이미지를 다시 선택
+        backgroundIndex = Math.floor(Math.random() * backgrounds.length);
+        background.src = backgrounds[backgroundIndex];
+
+        // 랜덤한 배경 이미지 그리기
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+        // 토탈 스코어 그리기
+        ctx.fillStyle = 'black';
+        ctx.font = '30px Arial';
+        ctx.fillText('Final Score: ' + score, canvas.width / 2 - 80, canvas.height / 2 + 70);
+
+        clearInterval(timeInterval);
+        cancelAnimationFrame(animation);
     }
 
     obstacleSpeed += obstacleSpeedIncrement;
@@ -125,23 +155,16 @@ document.addEventListener('keydown', function (e) {
     if (e.code === 'Space' && gameRunning) {
         dino.jump();
     }
-})
+});
 
 function collision(dino, cactus) {
     var xDifference = cactus.x - (dino.x + dino.width);
     var yDifference = cactus.y - (dino.y + dino.height);
 
     if (xDifference < 0 && yDifference < 0) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         gameRunning = false;
     } else if (cactus.x < 0) {
         cactusmix.shift();
         score++;
-    }
-
-    if (!gameRunning) {
-        ctx.fillStyle = 'black';
-        ctx.font = '20px Arial';
-        ctx.fillText('Final Score: ' + score, canvas.width / 2 - 80, canvas.height / 2 + 70);
     }
 }
