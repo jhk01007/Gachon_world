@@ -647,19 +647,19 @@ function animate() {
   if (controls.isLocked === true) {if (avatar) {
     // Update avatar's position based on the current direction and speed
     if (moveForward) {
-      avatar.position.x -= 0.4;
+      avatar.position.x -= 0.3;
       avatar.rotation.y = Math.PI; // Face the avatar forward
     }
     if (moveBackward) {
-      avatar.position.x += 0.4;
+      avatar.position.x += 0.3;
       avatar.rotation.y = 0; // Face the avatar backward
     }
     if (moveLeft) {
-      avatar.position.z += 0.4;
+      avatar.position.z += 0.3;
       avatar.rotation.y = -Math.PI / 2; // Face the avatar left
     }
     if (moveRight) {
-      avatar.position.z -= 0.4;
+      avatar.position.z -= 0.3;
       avatar.rotation.y = Math.PI / 2; // Face the avatar right
     }
     checkCollision1();
