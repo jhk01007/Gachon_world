@@ -79,6 +79,25 @@ var timeInterval = setInterval(function () {
     }
 }, 1000);
 
+function initializeGame() {
+    cactusmix = [];
+    score = 0;
+    remainingTime = gameTime;
+    gameRunning = true;
+    obstacleSpeed = 2;
+    byFrame();
+}
+
+// Return to Map 버튼 이벤트 핸들러
+document.getElementById('returnToMap').addEventListener('click', function() {
+    window.location.href = '/Gachon_University_Map/src/index.html'; // 다른 페이지로 리디렉션
+});
+
+// Restart 게임 버튼 이벤트 핸들러
+document.getElementById('restartGame').addEventListener('click', function() {
+    initializeGame(); // 게임 재시작
+});
+
 function byFrame() {
     animation = requestAnimationFrame(byFrame);
     timer++;

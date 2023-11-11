@@ -58,6 +58,12 @@ function onMouseClick(event) {
     }
 }
 
+
+homeButton.addEventListener('click', () => {
+    window.location.href = '/Gachon_University_Map/src/index.html'; // 'map.html'로 리디렉션
+});
+
+
 // Added: Restart button click event handler
 restartButton.addEventListener("click", () => {
     startScreen.style.display = "none";
