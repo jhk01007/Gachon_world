@@ -2,9 +2,7 @@
 --------------------------------------------------------------
 ## Reason for selecting project topic
 >We need to proceed with the Term Project using webgl and three.js, but I thought it would be better to move on the map like this because the 'Chunsik Observation Diary' produced by Kakao became noticeable.
-
 >Then I think it would be better to make Gachon University in the background, and I have to complete the project in a short period of 12 weeks, and I have to create new 3D modeling, so I only composed a map near the Gachon-gwan building.
-
 >So our Team F produced a map near the Gachon Pavilion building, conducted 3D modeling of Gachon Pavilion and Infinite Targets using blenders, and made it possible to proceed with the game when we reached each building.
 
 --------------------------------------------------------------
