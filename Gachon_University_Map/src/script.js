@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { getWeather } from "./weather.js";
+
 import { createGrassFloor, createRedBrickFloor, createGrayBrickFloor, createDirtFloor, createTree, smoke } from "./create.js";
 
 let camera, scene, renderer, controls;
@@ -10,17 +11,22 @@ let cloudParticles = [], flash, rain, rainGeo, rainCount = 30000, cloudGeo, clou
 
 const objects = [];
 
+let clock = new THREE.Clock(); 
+let mixer;
 let raycaster;
-
+let avatar;
 let moveForward = false;
 let moveBackward = false;
 let moveLeft = false;
 let moveRight = false;
 let canJump = false;
+let cameraAngle = { theta: 0, phi: 0 };
+let cameraDistance = 15;
 
 let prevTime = performance.now();
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
+
 
 // gltf loader
 const loader = new GLTFLoader();
@@ -75,8 +81,8 @@ function createSnow() {
     cloud.rotation.y = -0.12;
     cloud.rotation.z = Math.random() * 360;
     cloud.material.opacity = 0.2;
-    cloudParticles.push(cloud);
-    scene.add(cloud);
+    cloudParticles.push(구름);
+    scene.add(구름);
   }
   //기존 눈송이 생성 코드
   for (let i = 0; i < 5000; i++) {
@@ -115,8 +121,8 @@ function createClouds() {
     cloud.rotation.y = -0.12;
     cloud.rotation.z = Math.random() * 360;
     cloud.material.opacity = 0.2;
-    cloudParticles.push(cloud);
-    scene.add(cloud);
+    cloudParticles.push(구름);
+    scene.add(구름);
   }
 }
 
@@ -151,7 +157,7 @@ function createRainDrop() {
     transparent: true
   });
   rain = new THREE.Points(rainGeo, rainMaterial);
-  scene.add(rain);
+  scene.add(비);
 
 
   scene.fog = new THREE.FogExp2(0x11111f, 0.002);
@@ -173,8 +179,8 @@ function createRainDrop() {
     cloud.rotation.y = -0.12;
     cloud.rotation.z = Math.random() * 360;
     cloud.material.opacity = 0.2;
-    cloudParticles.push(cloud);
-    scene.add(cloud);
+    cloudParticles.push(구름);
+    scene.add(구름);
   }
 
 
@@ -223,22 +229,22 @@ function init() {
   const onKeyDown = function (event) {
     switch (event.code) {
       case "ArrowUp":
-      case "KeyW":
+      case "KeyS":
         moveForward = true;
         break;
 
       case "ArrowLeft":
-      case "KeyA":
+      case "KeyD":
         moveLeft = true;
         break;
 
       case "ArrowDown":
-      case "KeyS":
+      case "KeyW":
         moveBackward = true;
         break;
 
       case "ArrowRight":
-      case "KeyD":
+      case "KeyA":
         moveRight = true;
         break;
 
@@ -252,22 +258,22 @@ function init() {
   const onKeyUp = function (event) {
     switch (event.code) {
       case "ArrowUp":
-      case "KeyW":
+      case "KeyS":
         moveForward = false;
         break;
 
       case "ArrowLeft":
-      case "KeyA":
+      case "KeyD":
         moveLeft = false;
         break;
 
       case "ArrowDown":
-      case "KeyS":
+      case "KeyW":
         moveBackward = false;
         break;
 
       case "ArrowRight":
-      case "KeyD":
+      case "KeyA":
         moveRight = false;
         break;
     }
@@ -275,6 +281,11 @@ function init() {
 
   document.addEventListener("keydown", onKeyDown);
   document.addEventListener("keyup", onKeyUp);
+  document.addEventListener('mousemove', function(event) {
+    cameraAngle.theta += event.movementX * 0.005;
+    cameraAngle.phi = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraAngle.phi + event.movementY * 0.005));
+});
+
 
   raycaster = new THREE.Raycaster(
     new THREE.Vector3(),
@@ -344,6 +355,26 @@ function init() {
     tree.position.z = i * -40;
     scene.add(tree);
   }
+
+  const avatarHeightAboveGround = 1.5;
+
+  loader.load('../avatar/무한이_animation_adding_ver3.gltf', function (gltf) {
+    avatar = gltf.scene;
+    avatar.scale.set(1, 1, 1); // 아바타 크기 조절
+    avatar.position.set(0, avatarHeightAboveGround, 5); // 아바타 위치 설정, Adjust the Y position here
+    scene.add(avatar);
+
+    // 아바타 위치를 바라보는 카메라 위치 설정
+    mixer = new THREE.AnimationMixer(avatar);
+
+    // 모든 애니메이션 클립을 반복 재생
+    gltf.animations.forEach((clip) => {
+      mixer.clipAction(clip).play();
+    });
+    
+}, undefined, function (error) {
+    console.error(error);
+});
   //
 
   //건물 로드하기
@@ -352,6 +383,7 @@ function init() {
     '../building/gachongwan.gltf',
     function (gltf) {
       const model = gltf.scene;
+      model.name = 'gachongwan'
       model.position.set(40, 1, -280);
       model.scale.set(8, 8, 8);
       model.rotation.y = (Math.PI / 2) * 3;
@@ -373,6 +405,7 @@ function init() {
     '../building/muhandae.gltf',
     function (gltf) {
       const model = gltf.scene;
+      model.name ='muhande'
       model.position.set(80, 4.5, -72);
       model.scale.set(3, 3, 3);
       model.rotation.y = (Math.PI / 2) * 3;
@@ -396,6 +429,7 @@ function init() {
     '../building/art2/scene.gltf',
     function (gltf) {
       const model = gltf.scene;
+      model.name='art'
       model.position.set(-320, 1, -160);
       model.scale.set(100, 100, 100);
       model.rotation.y = Math.PI;
@@ -416,7 +450,7 @@ function init() {
   //날씨 불러오기
   setTimeout(async () => {
     var weatherId = await getWeather();
-    
+    //weatherId = 610;
     console.log(weatherId);
     if (weatherId >= 200 && weatherId <= 531) {
       console.log("Rain");
@@ -451,8 +485,69 @@ function onWindowResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+function checkCollision1() {
+  // 'muhandae' 이름을 가진 모델을 씬에서 찾습니다.
+  const muhandaeBuilding = scene.getObjectByName('muhande');
+  if (!muhandaeBuilding) {
+    console.warn('씬에서 muhandae 건물을 찾을 수 없습니다');
+    return;
+  }
+
+  // 아바타와 muhandae 건물의 바운딩 박스를 생성합니다.
+  const avatarBB1 = new THREE.Box3().setFromObject(avatar);
+  const muhandaeBB1 = new THREE.Box3().setFromObject(muhandaeBuilding);
+
+  // 교차하는지 확인합니다.
+  if (avatarBB1.intersectsBox(muhandaeBB1)) {
+    // 충돌이 감지되었으므로 게임 HTML 페이지로 리다이렉션합니다.
+    window.location.href = '/Gachon_Hero/index.html'; // 실제 URL로 대체해주세요.
+  }
+}
+function checkCollision2() {
+  // 'muhandae' 이름을 가진 모델을 씬에서 찾습니다.
+  const muhandaeBuilding2 = scene.getObjectByName('gachongwan');
+  if (!muhandaeBuilding2) {
+    console.warn('씬에서 muhandae 건물을 찾을 수 없습니다');
+    return;
+  }
+
+  // 아바타와 muhandae 건물의 바운딩 박스를 생성합니다.
+  const avatarBB2 = new THREE.Box3().setFromObject(avatar);
+  const muhandaeBB2 = new THREE.Box3().setFromObject(muhandaeBuilding2);
+
+  // 교차하는지 확인합니다.
+  if (avatarBB2.intersectsBox(muhandaeBB2)) {
+    // 충돌이 감지되었으므로 게임 HTML 페이지로 리다이렉션합니다.
+    window.location.href = '/HURDLE_RUN/index.html'; // 실제 URL로 대체해주세요.
+  }
+}
+function checkCollision3() {
+  // 'muhandae' 이름을 가진 모델을 씬에서 찾습니다.
+  const muhandaeBuilding3 = scene.getObjectByName('art');
+  if (!muhandaeBuilding3) {
+    console.warn('씬에서 muhandae 건물을 찾을 수 없습니다');
+    return;
+  }
+
+  // 아바타와 muhandae 건물의 바운딩 박스를 생성합니다.
+  const avatarBB3 = new THREE.Box3().setFromObject(avatar);
+  const muhandaeBB3 = new THREE.Box3().setFromObject(muhandaeBuilding3);
+
+  // 교차하는지 확인합니다.
+  if (avatarBB3.intersectsBox(muhandaeBB3)) {
+    // 충돌이 감지되었으므로 게임 HTML 페이지로 리다이렉션합니다.
+    window.location.href = '/MouseTouchGame/MousetouchGame.html'; // 실제 URL로 대체해주세요.
+  }
+}
+
 function animate() {
   requestAnimationFrame(animate);
+
+  const delta = clock.getDelta(); // 애니메이션 업데이트를 위한 시간 차이 계산
+
+  if (mixer) {
+    mixer.update(delta); // 애니메이션 믹서 업데이트
+  }
 
 
   if (rainFlag == 1) {
@@ -538,6 +633,54 @@ function animate() {
   snowflakes.forEach(snowflake => {
     snowflake.update();
   });
+
+  let offsetX = cameraDistance * Math.sin(cameraAngle.theta) * Math.cos(cameraAngle.phi);
+  let offsetY = cameraDistance * Math.sin(cameraAngle.phi);
+  let offsetZ = cameraDistance * Math.cos(cameraAngle.theta) * Math.cos(cameraAngle.phi);
+
+  camera.position.x = avatar.position.x + offsetX;
+  camera.position.y = avatar.position.y + offsetY;
+  camera.position.z = avatar.position.z + offsetZ;
+
+  camera.lookAt(avatar.position);
+
+  if (controls.isLocked === true) {if (avatar) {
+    // Update avatar's position based on the current direction and speed
+    if (moveForward) {
+      avatar.position.x -= 0.1;
+      avatar.rotation.y = Math.PI; // Face the avatar forward
+    }
+    if (moveBackward) {
+      avatar.position.x += 0.1;
+      avatar.rotation.y = 0; // Face the avatar backward
+    }
+    if (moveLeft) {
+      avatar.position.z += 0.1;
+      avatar.rotation.y = -Math.PI / 2; // Face the avatar left
+    }
+    if (moveRight) {
+      avatar.position.z -= 0.1;
+      avatar.rotation.y = Math.PI / 2; // Face the avatar right
+    }
+    checkCollision1();
+    checkCollision2();
+    checkCollision3();
+
+  
+    
+
+    
+
+    
+
+    // Update the camera to follow the avatar
+    
+
+     
+  }
+}
+
+ 
 
   renderer.render(scene, camera);
 }
