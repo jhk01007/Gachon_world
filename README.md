@@ -10,12 +10,10 @@
 # How to do it
 Files in 'Gachon_University_Map\src\index.html' can be executed using the Visual Studio Code extension program 'Open with Live Server'.
 
---------------------------------------------------------------
 
 # How to move characters
 You can use WASD to make your character move.
 
---------------------------------------------------------------
 
 # How to play by game
 1. Gachon_Hero
@@ -31,6 +29,7 @@ You can use WASD to make your character move.
     + If you enter the Infinite Awards in front of Gachon-gwan, you can proceed with the game.
     + Please note that the play method is described in detail in the game.
 
+--------------------------------------------------------------
 
 # Reference
 + https://github.com/jrkuhn/KeyboardHero
