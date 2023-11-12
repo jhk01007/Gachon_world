@@ -1,6 +1,8 @@
 import * as THREE from "three";
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // texture 
 const textureLoader = new THREE.TextureLoader();
+const gltfLoader = new GLTFLoader();
 
 // grass texture
 const grass_textureBaseColor = textureLoader.load('../texture/grass/Ground_Grass_001_COLOR.jpg');
@@ -248,3 +250,23 @@ export function createTree() {
     tree.add(leaves);
     return tree;
 }
+export function createLamp(callback) {
+    gltfLoader.load(
+      '../building/street_lamp/scene.gltf',
+      function (gltf) {
+        const lamp = gltf.scene;
+        lamp.scale.set(4, 4, 4);
+        
+        // 로드된 램프를 인자로하여 콜백 함수 호출
+        callback(lamp);
+      },
+      // 로딩 중에 호출되는 함수
+      function (xhr) {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+      },
+      // 로딩 중 에러 발생 시 호출되는 함수
+      function (error) {
+        console.log('An error happened');
+      }
+    );
+  }

@@ -120,15 +120,15 @@ function byFrame() {
     });
 
     if (dino.isJumping) {
-        dino.y -= 1;
+        dino.y -= 3.5;
         jumpingTime++;
-        if (jumpingTime > 100) {
+        if (jumpingTime > 35) {
             dino.isJumping = false;
             jumpingTime = 0;
         }
     } else {
         if (dino.y < dino.initialY) {
-            dino.y += 1;
+            dino.y += 3.5;
         }
     }
     dino.draw();
@@ -171,7 +171,8 @@ function byFrame() {
 byFrame();
 
 document.addEventListener('keydown', function (e) {
-    if (e.code === 'Space' && gameRunning) {
+    console.log(e.code);
+    if (e.code === 'KeyZ' && gameRunning) {
         dino.jump();
     }
 });
